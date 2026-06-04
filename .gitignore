@@ -1,0 +1,18 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+
+# Piper / Whisper model binaries (downloaded at build time)
+tts/models/*.onnx
+tts/models/*.onnx.json
+.cache/
+
+# Chainlit runtime
+.chainlit/translations/

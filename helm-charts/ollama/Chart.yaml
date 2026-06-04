@@ -1,0 +1,13 @@
+apiVersion: v2
+name: ollama
+description: Ollama LLM server with persistent model storage
+type: application
+version: 0.1.0
+appVersion: "0.6.2"
+keywords:
+  - ai
+  - llm
+  - ollama
+  - qwen
+maintainers:
+  - name: Fahad Shaikh

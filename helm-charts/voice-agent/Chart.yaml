@@ -1,0 +1,14 @@
+apiVersion: v2
+name: voice-agent
+description: AI Voice Agent — Chainlit UI with Whisper STT and Piper TTS
+type: application
+version: 0.1.0
+appVersion: "0.1.0"
+keywords:
+  - ai
+  - voice
+  - chainlit
+  - whisper
+  - piper
+maintainers:
+  - name: Fahad Shaikh

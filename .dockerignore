@@ -1,0 +1,12 @@
+.git/
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+.cache/
+tts/models/*.onnx
+tts/models/*.onnx.json
+helm-charts/
+.chainlit/translations/
+README.md
+DESIGN.md

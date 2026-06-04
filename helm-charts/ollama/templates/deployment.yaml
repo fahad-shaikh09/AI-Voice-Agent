@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "ollama.fullname" . }}
+  labels:
+    {{- include "ollama.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "ollama.selectorLabels" . | nindent 6 }}
+  strategy:
+    type: Recreate  # PVC is ReadWriteOnce — only one pod may mount it at a time
+  template:
+    metadata:
+      labels:
+        {{- include "ollama.selectorLabels" . | nindent 8 }}
+    spec:
+      serviceAccountName: {{ include "ollama.serviceAccountName" . }}
+      {{- with .Values.podSecurityContext }}
+      securityContext:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: ollama
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: 11434
+              protocol: TCP
+          env:
+            - name: OLLAMA_HOST
+              value: "0.0.0.0"
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          readinessProbe:
+            {{- toYaml .Values.readinessProbe | nindent 12 }}
+          livenessProbe:
+            {{- toYaml .Values.livenessProbe | nindent 12 }}
+          securityContext:
+            {{- toYaml .Values.containerSecurityContext | nindent 12 }}
+          {{- if .Values.persistence.enabled }}
+          volumeMounts:
+            - name: ollama-models
+              mountPath: {{ .Values.persistence.mountPath }}
+          {{- end }}
+      {{- if .Values.persistence.enabled }}
+      volumes:
+        - name: ollama-models
+          persistentVolumeClaim:
+            claimName: {{ include "ollama.fullname" . }}-models
+      {{- end }}

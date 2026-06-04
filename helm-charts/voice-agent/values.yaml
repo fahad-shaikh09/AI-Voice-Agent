@@ -1,0 +1,65 @@
+# Override the full resource name — keeps resource names clean regardless of release name
+fullnameOverride: "voice-agent"
+
+replicaCount: 1
+
+image:
+  repository: ai-voice-agent
+  tag: latest
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 8000
+
+route:
+  enabled: true
+  host: ""  # leave empty to let OpenShift auto-generate
+  tls:
+    termination: edge
+    insecureEdgeTerminationPolicy: Redirect
+  annotations:
+    haproxy.router.openshift.io/timeout: 300s
+
+config:
+  ollamaHost: "http://ollama:11434"
+  ollamaModel: "qwen3.6"
+  whisperModel: "base"
+  piperModel: "en_US-lessac-medium"
+  piperModelDir: "tts/models"
+  # Must match the HF_HOME baked into the Dockerfile so Whisper finds cached model files
+  hfHome: "/app/.cache/huggingface"
+
+resources:
+  requests:
+    cpu: 500m
+    memory: 1Gi
+  limits:
+    cpu: "2"
+    memory: 2Gi
+
+readinessProbe:
+  httpGet:
+    path: /health
+    port: 8000
+  initialDelaySeconds: 20
+  periodSeconds: 10
+
+livenessProbe:
+  httpGet:
+    path: /health
+    port: 8000
+  initialDelaySeconds: 40
+  periodSeconds: 30
+
+# Pod-level security context (applied to all containers)
+podSecurityContext:
+  runAsNonRoot: true
+  seccompProfile:
+    type: RuntimeDefault
+
+# Container-level security context
+containerSecurityContext:
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop: ["ALL"]

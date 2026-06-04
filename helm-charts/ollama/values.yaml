@@ -1,0 +1,55 @@
+# Override the full resource name — keeps the Service name "ollama" regardless of release name,
+# which is what the voice-agent chart expects at http://ollama:11434
+fullnameOverride: "ollama"
+
+replicaCount: 1
+
+image:
+  repository: ollama/ollama
+  tag: latest
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 11434
+
+persistence:
+  enabled: true
+  storageClass: ""  # use cluster default
+  accessMode: ReadWriteOnce
+  size: 30Gi
+  mountPath: /root/.ollama
+
+# Model seeded into the PVC via: oc cp ~/.ollama/models/ <pod>:/root/.ollama/models/
+model: "qwen3.6"
+
+resources:
+  requests:
+    cpu: "2"
+    memory: 6Gi
+  limits:
+    cpu: "4"
+    memory: 8Gi
+
+readinessProbe:
+  httpGet:
+    path: /api/tags
+    port: 11434
+  initialDelaySeconds: 15
+  periodSeconds: 10
+
+livenessProbe:
+  httpGet:
+    path: /api/tags
+    port: 11434
+  initialDelaySeconds: 30
+  periodSeconds: 30
+
+# Ollama writes to /root/.ollama — must run as root (UID 0).
+# Requires the anyuid SCC on OpenShift:
+#   oc adm policy add-scc-to-serviceaccount anyuid -z ollama -n ai-voice-agent
+podSecurityContext: {}
+
+containerSecurityContext:
+  runAsNonRoot: false
+  allowPrivilegeEscalation: false
