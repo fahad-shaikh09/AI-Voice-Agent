@@ -13,7 +13,13 @@ def _voice() -> PiperVoice:
 
 
 def synthesize(text: str) -> bytes:
+    voice = _voice()
     buf = io.BytesIO()
     with wave.open(buf, "wb") as wav:
-        _voice().synthesize(text, wav)
-    return buf.getvalue()
+        wav.setnchannels(1)
+        wav.setsampwidth(2)  # 16-bit PCM
+        wav.setframerate(voice.config.sample_rate)
+        voice.synthesize(text, wav)
+    result = buf.getvalue()
+    print(f"[TTS] synthesized {len(result)} bytes at {voice.config.sample_rate} Hz for: {text[:80]!r}", flush=True)
+    return result

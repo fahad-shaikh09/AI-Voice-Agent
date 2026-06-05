@@ -66,7 +66,7 @@ reaction_on_message_received = false
     # 3. For specific file extensions:
     #    accept = { "application/octet-stream" = [".xyz", ".pdb"] }
     # Note: Using "*/*" is not recommended as it may cause browser warnings
-    accept = ["*/*"]
+    accept = ["audio/*", "image/*", "video/*", "application/pdf", "text/plain"]
     max_files = 20
     max_size_mb = 500
 
@@ -101,7 +101,7 @@ name = "Assistant"
 
 # Force a specific language for all users (e.g., "en-US", "he-IL", "fr-FR")
 # If not set, the browser's language will be used
-# language = "en-US"
+language = "en-US"
 
 # layout = "wide"
 
@@ -131,7 +131,7 @@ cot = "full"
 
 # Specify a JavaScript file that can be used to customize the user interface.
 # The JavaScript file can be served from the public directory.
-# custom_js = "/public/test.js"
+custom_js = "/public/autostop.js"
 
 # The style of alert boxes. Can be "classic" or "modern".
 alert_style = "classic"

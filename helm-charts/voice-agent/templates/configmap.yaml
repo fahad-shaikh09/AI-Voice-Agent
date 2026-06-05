@@ -11,3 +11,4 @@ data:
   PIPER_MODEL: {{ .Values.config.piperModel | quote }}
   PIPER_MODEL_DIR: {{ .Values.config.piperModelDir | quote }}
   HF_HOME: {{ .Values.config.hfHome | quote }}
+  OPENSSL_armcap: "0"

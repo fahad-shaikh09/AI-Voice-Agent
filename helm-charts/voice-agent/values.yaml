@@ -6,7 +6,7 @@ replicaCount: 1
 image:
   repository: ai-voice-agent
   tag: latest
-  pullPolicy: IfNotPresent
+  pullPolicy: Always
 
 service:
   type: ClusterIP
